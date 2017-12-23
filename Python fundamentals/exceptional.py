@@ -1,6 +1,11 @@
 """A module for demonstarting exceptions"""
 
 import sys
+from math import log
+
+def string_log(s):
+    v = convert(s)
+    return log(v)
 
 def convert(s):
     """Convert to an integer"""
@@ -15,4 +20,4 @@ def convert(s):
     except (ValueError, TypeError) as e:
         print("Conversion error: {}".format(str(e)),
             file=sys.stderr)
-        return -1
+        raise
