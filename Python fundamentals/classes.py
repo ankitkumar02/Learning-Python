@@ -90,7 +90,20 @@ class Flight:
         return sum(sum(1 for s in row.values() if s is None)    #nested generators
                     for row in self._seating
                     if row is not None)
-        
+
+    def make_boarding_cards(self, card_printer):
+        for passenger, seat in sorted(self._passenegr_seats()):
+            card_printer(passenger, seat, self.number(), self.aircraft_model())
+
+    def _passenegr_seats(self):
+        """An iterable series of passenger seating allocations."""
+        row_numbers, seat_letters = self._aircraft.seating_plan()
+        for row in row_numbers:
+            for letter in seat_letters:
+                passenger = self._seating[row][letter]
+                if passenger is not None:
+                    yield (passenger, "{}{}".format(row, letter))
+
 
 class Aircraft:
     def __init__(self, registration, model, num_rows, num_seats_per_row):
@@ -114,3 +127,17 @@ def make_flight():
     f.allocate_seat('13A', 'Ashwani Kumar')
     f.allocate_seat('1C', 'Vikas Kumar')
     return f
+
+def console_card_printer(passenger, seat, flight_number, aircraft):
+    output = "| Name: {0} "        \
+             "| Flight: {1} "      \
+             "| Seat: {2} "        \
+             "|Aircraft: {3}"      \
+             "|".format(passenger, flight_number, seat, aircraft)
+    
+    banner = '+' + '-' * (len(output) - 2) + '+'
+    border = '|' + ' ' * (len(output) - 2) + '|'
+    lines = [banner, border, output, border, banner]
+    card = '\n'.join(lines)
+    print(card)
+    print()
